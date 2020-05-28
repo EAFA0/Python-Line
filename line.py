@@ -40,6 +40,8 @@ class Line:
                 self.iter_num += 1
         except StopAsyncIteration:
             self.data_iterable = False
+            # check and stop the line
+            return self._continue()
         else:
             args, kwargs = self.converter(_data)
 
@@ -79,7 +81,7 @@ class Line:
             self.wind_up(result)
 
         if self._continue():
-            await self._next()
+            asyncio.create_task(self._next())
 
     def set_generator(self,
                       _iter: AsyncIterable,
